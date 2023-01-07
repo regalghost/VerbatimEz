@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <header bgcolor = "blue">
+        Ezzzz Verbatim
+    </header>
+
+    <style>
+        #VideoInput{
+            margin-top: 20px;
+            margin-bottom: 20px;
+            margin-left: 20%;
+            margin-right: 50%;
+        }
+    </style>
+    <style>
+        table{
+            margin-top: 20px;
+            margin-bottom: 20px;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+    </style>
+
+    <style>
+    .slidecontainer {
+    width: 100%;
+    }
+
+    .slider {
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    }
+
+    .slider:hover {
+    opacity: 1;
+    }
+
+    .slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #04AA6D;
+    cursor: pointer;
+    }
+
+    .slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #04AA6D;
+    cursor: pointer;
+    }
+    </style>
+
+</head>
+<body>
+
+    <input type = "file" name = "file" onchange = "uploadVideo(this)">
+    <video id = 'VideoInput' controls width = "700">
+            <source id = 'source' type = "video/mp4">
+    </video>    
+
+
+    <div class="slidecontainer">
+        <input type="range" min="100" max="1000" value="500" class="slider" id="myRange">
+        <p>Kecepatan Interval: <span id="demo"></span></p>
+        
+    </div>
+
+    <label for="DeteksiMengetik">
+        Ketik aja semuanya di sini
+    </label>
+    <br>
+
+    <table bgcolor = "black">
+        <tr bgcolor = "grey">
+            <th>Ir/Ie</th>
+
+            <th>Keterangan</th>
+        </tr>
+            
+        <tr bgcolor = "white">
+            <td>Ir</td>
+            <td>
+                <textarea id="DeteksiMengetik" name="DeteksiMengetik" rows = "20" cols="200" bgcolor = "lightblue"></textarea>
+            </td>
+        </tr>
+        
+
+
+        </table>    
+
+
+    <div id="status"></div>
+
+
+
+
+    <script>
+        
+        function uploadVideo(self) {
+            var file = self.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                var src = e.target.result;
+                var video = document.getElementById('VideoInput');
+                var source = document.getElementById('source');
+
+                source.setAttribute('src', src);
+                video.load();
+            };
+
+            reader.readAsDataURL(file)
+        }
+
+        var slider = document.getElementById("myRange");
+        var output = document.getElementById("demo");
+        output.innerHTML = slider.value;
+
+        var timeoutVal = slider.value;
+        
+        slider.oninput = function() {
+            
+            output.innerHTML = this.value;
+            timeoutVal = this.value;
+
+        } 
+
+
+        let timer;
+                    
+          
+            let vid = document.getElementById('VideoInput');
+
+            let table = document.querySelector('table');
+
+            const statuses = document.getElementById('status');
+            const DeteksiMengetik = document.getElementById('DeteksiMengetik');
+
+            DeteksiMengetik.addEventListener('keydown', handleKeyPress)
+            DeteksiMengetik.addEventListener('keydown', handleKeyUp)
+
+
+                // when user is pressing down on keys, clear the timeout
+            function handleKeyPress(e) {
+                window.clearTimeout(timer);
+                statuses.innerHTML = 'Mengetik';
+                vid.pause();
+            }
+            // when the user has stopped pressing on keys, set the timeout
+            // if the user presses on keys before the timeout is reached, then this timeout is canceled
+            function handleKeyUp(e) {
+                console.log(timeoutVal);
+                window.clearTimeout(timer); // prevent errant multiple timeouts from being generated
+                timer = window.setTimeout(() => {
+                    statuses.innerHTML = 'Video Play';
+                    vid.play();
+                }, timeoutVal);
+        
+            }
+            
+          
+
+
+        
+    </script>
+
+
+</body>
+</html>

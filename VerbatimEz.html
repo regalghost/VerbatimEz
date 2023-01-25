@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+    
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>VerbatimEz</title>
+
     <header bgcolor = "blue">
         Ezzzz Verbatim
     </header>
+
+    <style>
+        body {background-color: #FFFDD0;}
+    </style>
 
     <style>
         #VideoInput{
@@ -27,7 +33,9 @@
 
     </style>
 
+
     <style>
+
     .slidecontainer {
     width: 100%;
     }
@@ -52,7 +60,7 @@
     width: 25px;
     height: 25px;
     border-radius: 50%;
-    background: #04AA6D;
+    background: #000000;
     cursor: pointer;
     }
 
@@ -60,7 +68,7 @@
     width: 25px;
     height: 25px;
     border-radius: 50%;
-    background: #04AA6D;
+    background: #3d73a9;
     cursor: pointer;
     }
     </style>
@@ -68,15 +76,16 @@
 </head>
 <body>
 
-    <input type = "file" name = "file" onchange = "uploadVideo(this)">
-    <video id = 'VideoInput' controls width = "700">
-            <source id = 'source' type = "video/mp4">
-    </video>    
+    <input type = "file" name = "file" onchange = "uploadVideo(this)" >
+        <video id = 'VideoInput' controls width = "700">
+                <source id = 'source' type = "video/mp4">       <!Inputan untuk video dengan Fucntion uploadVideo pada javascript>
+        </video>    
 
 
     <div class="slidecontainer">
         <input type="range" min="100" max="1000" value="500" class="slider" id="myRange">
         <p>Kecepatan Interval: <span id="demo"></span></p>
+        <p>Banyaknya Baris: <span id = "baris"></span></p>
         
     </div>
 
@@ -93,7 +102,7 @@
         </tr>
             
         <tr bgcolor = "white">
-            <td>Ir</td>
+            <td>Ir/Ie</td>
             <td>
                 <textarea id="DeteksiMengetik" name="DeteksiMengetik" rows = "20" cols="200" bgcolor = "lightblue"></textarea>
             </td>
@@ -111,9 +120,9 @@
 
     <script>
         
-        function uploadVideo(self) {
+        function uploadVideo(self) {           // Fucntion untuk mengupload video standart di mana hanya satu video saja
             var file = self.files[0];
-            var reader = new FileReader();
+            var reader = new FileReader(); 
 
             reader.onload = function(e) {
                 var src = e.target.result;
@@ -127,21 +136,25 @@
             reader.readAsDataURL(file)
         }
 
+        
+        //Function untuk slider di mana slider sebagai input untuk kecepatan interval antara pause dan resume selama mengetik
+        //Semakin tinggi angka maka interval akan semakin lama
+
         var slider = document.getElementById("myRange");
         var output = document.getElementById("demo");
         output.innerHTML = slider.value;
 
-        var timeoutVal = slider.value;
+        var timeoutVal = output.innerHTML;
         
         slider.oninput = function() {
             
             output.innerHTML = this.value;
             timeoutVal = this.value;
-
         } 
 
+        //Menuju fungsi pause dan resume berdasarkan deteksi mengetik
 
-        let timer;
+        let timer; 
                     
           
             let vid = document.getElementById('VideoInput');
@@ -150,20 +163,29 @@
 
             const statuses = document.getElementById('status');
             const DeteksiMengetik = document.getElementById('DeteksiMengetik');
+           
+            //Numberofrow sebagai banyaknya baris tiap "enter" yang berarti seberapa banyak interviewer dan interviewe berbicara
 
-            DeteksiMengetik.addEventListener('keydown', handleKeyPress)
-            DeteksiMengetik.addEventListener('keydown', handleKeyUp)
+            var numberofrow = document.getElementById('baris');
+            numberofrow.innerHTML = 1;
+
+            //addeventlistener sebagai pendeteksi event yang terjadi pada input (dalam hal ini input adalah textarea)
+            DeteksiMengetik.addEventListener('keydown', Typing)
+            DeteksiMengetik.addEventListener('keydown', notTyping)
+            DeteksiMengetik.addEventListener('keypress', PressingEnter)
 
 
-                // when user is pressing down on keys, clear the timeout
-            function handleKeyPress(e) {
+
+                // ketika pengguna mengetik, maka fungsi akan mendeteksi adanya pergerakan pada keyboard sehingga function typing akan berjalan berdasarkan addeventlistener 'keydown'
+            function Typing(e) {
                 window.clearTimeout(timer);
                 statuses.innerHTML = 'Mengetik';
                 vid.pause();
             }
-            // when the user has stopped pressing on keys, set the timeout
-            // if the user presses on keys before the timeout is reached, then this timeout is canceled
-            function handleKeyUp(e) {
+            
+                // ketika pengguna berhenti mengetik, fungsi notTyping akan berjalan berdasarkan 'keydown' dan timer akan diclear
+            
+            function notTyping(e) {
                 console.log(timeoutVal);
                 window.clearTimeout(timer); // prevent errant multiple timeouts from being generated
                 timer = window.setTimeout(() => {
@@ -172,10 +194,18 @@
                 }, timeoutVal);
         
             }
-            
+                      
+                //function untuk mendekteksi ketika enter ditekan maka akan menambah jumlah baris
+            function PressingEnter(e) {
+                            
+                var key = e.keyCode || e.which;
+                if (key==13){
+         
+                        numberofrow.innerHTML++;                        
+                    
+                };
+            }
           
-
-
         
     </script>
 
